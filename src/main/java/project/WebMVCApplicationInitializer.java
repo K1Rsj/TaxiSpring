@@ -8,12 +8,14 @@ import org.springframework.web.servlet.DispatcherServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 
-
 public class WebMVCApplicationInitializer implements WebApplicationInitializer {
 
+    @Override
     public void onStartup(ServletContext servletContext) {
+        System.out.println(Initializer.EVIL);
         AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
         applicationContext.register(Initializer.class);
+        //applicationContext.refresh();
 
         servletContext.addListener(new ContextLoaderListener(applicationContext));
         ServletRegistration.Dynamic registration = servletContext.addServlet("dispatcher", new DispatcherServlet(applicationContext));

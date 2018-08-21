@@ -10,10 +10,10 @@
 
     <link href="https://fonts.googleapis.com/css?family=Kurale" rel="stylesheet">
 
-    <style type="text/css">
-        <jsp:include page="../../resources/css/bootstrap.min.css"/>
-        <jsp:include page="../../resources/css/style.css"/>
-    </style>
+    <link rel="stylesheet" href="<c:url value='/resources/css/bootstrap.min.css'/>">
+    <link rel="stylesheet" href="<c:url value='/resources/css/style.css'/>">
+
+
 
 </head>
 

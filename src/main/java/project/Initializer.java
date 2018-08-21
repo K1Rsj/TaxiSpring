@@ -15,7 +15,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.JstlView;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -25,30 +28,18 @@ import java.util.Properties;
 @EnableWebMvc
 @ComponentScan("project")
 @EnableJpaRepositories("project.model.dao.repository")
-public class Initializer {
+public class Initializer implements WebMvcConfigurer {
 
-    public static final String EVIL =
-            "                            ,-.                                \n"
-                    + "       ___,---.__          /'|`\\          __,---,___           \n"
-                    + "    ,-'    \\`    `-.____,-'  |  `-.____,-'    //    `-.        \n"
-                    + "  ,'        |           ~'\\     /`~           |        `.      \n"
-                    + " /      ___//              `. ,'          ,  , \\___      \\     \n"
-                    + "|    ,-'   `-.__   _         |        ,    __,-'   `-.    |    \n"
-                    + "|   /          /\\_  `   .    |    ,      _/\\          \\   |    \n"
-                    + "\\  |           \\ \\`-.___ \\   |   / ___,-'/ /           |  /    \n"
-                    + " \\  \\           | `._   `\\\\  |  //'   _,' |           /  /     \n"
-                    + "  `-.\\         /'  _ `---'' , . ``---' _  `\\         /,-'      \n"
-                    + "     ``       /     \\    ,='/ \\`=.    /     \\       ''         \n"
-                    + "             |__   /|\\_,--.,-.--,--._/|\\   __|                 \n"
-                    + "             /  `./  \\\\`\\ |  |  | /,//' \\,'  \\                 \n"
-                    + "            /   /     ||--+--|--+-/-|     \\   \\                \n"
-                    + "           |   |     /'\\_\\_\\ | /_/_/`\\     |   |               \n"
-                    + "            \\   \\__, \\_     `~'     _/ .__/   /                \n"
-                    + "             `-._,-'   `-._______,-'   `-._,-'                 \n";
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/resources/**")
+                .addResourceLocations("/resources/");
+    }
 
     @Bean
     public ViewResolver viewResolver() {
         InternalResourceViewResolver internalResourceViewResolver = new InternalResourceViewResolver();
+        //internalResourceViewResolver.setViewClass(JstlView.class);
         internalResourceViewResolver.setPrefix("/WEB-INF/");
         internalResourceViewResolver.setSuffix(".jsp");
 
@@ -58,6 +49,7 @@ public class Initializer {
     @Bean
     public static DataSource getDataSource() {
         BasicDataSource dataSource = new BasicDataSource();
+        dataSource.setDriverClassName(Driver.class.getCanonicalName());
         dataSource.setUrl("jdbc:mysql://localhost:3306/taxi");
         dataSource.setUsername("root");
         dataSource.setPassword("root");
@@ -86,7 +78,7 @@ public class Initializer {
 
     private Properties jpaProps() {
         Properties jpaProps = new Properties();
-        jpaProps.put(Environment.DRIVER, Driver.class.getCanonicalName());
+        //jpaProps.put(Environment.DRIVER, Driver.class.getCanonicalName());
         jpaProps.put(Environment.DIALECT, MySQL5Dialect.class.getCanonicalName());
         jpaProps.put(Environment.HBM2DDL_AUTO, "validate");
         jpaProps.put(Environment.SHOW_SQL, true);
@@ -95,4 +87,23 @@ public class Initializer {
 
         return jpaProps;
     }
+
+    public static final String EVIL =
+            "                            ,-.                                \n"
+                    + "       ___,---.__          /'|`\\          __,---,___           \n"
+                    + "    ,-'    \\`    `-.____,-'  |  `-.____,-'    //    `-.        \n"
+                    + "  ,'        |           ~'\\     /`~           |        `.      \n"
+                    + " /      ___//              `. ,'          ,  , \\___      \\     \n"
+                    + "|    ,-'   `-.__   _         |        ,    __,-'   `-.    |    \n"
+                    + "|   /          /\\_  `   .    |    ,      _/\\          \\   |    \n"
+                    + "\\  |           \\ \\`-.___ \\   |   / ___,-'/ /           |  /    \n"
+                    + " \\  \\           | `._   `\\\\  |  //'   _,' |           /  /     \n"
+                    + "  `-.\\         /'  _ `---'' , . ``---' _  `\\         /,-'      \n"
+                    + "     ``       /     \\    ,='/ \\`=.    /     \\       ''         \n"
+                    + "             |__   /|\\_,--.,-.--,--._/|\\   __|                 \n"
+                    + "             /  `./  \\\\`\\ |  |  | /,//' \\,'  \\                 \n"
+                    + "            /   /     ||--+--|--+-/-|     \\   \\                \n"
+                    + "           |   |     /'\\_\\_\\ | /_/_/`\\     |   |               \n"
+                    + "            \\   \\__, \\_     `~'     _/ .__/   /                \n"
+                    + "             `-._,-'   `-._______,-'   `-._,-'                 \n";
 }

@@ -15,6 +15,6 @@ public interface CarRepository extends JpaRepository<Car, Integer> {
     List<Car> findAllByOrderByCarTypeId();
 
     @Modifying
-    @Query("UPDATE Car car SET car.state = :carState WHERE car.id =: carId")
+    @Query("UPDATE Car car SET car.state = :carState WHERE car.id = :carId")
     void updateCarState(@Param("carState") Car.State carState, @Param("carId") Integer carId);
 }

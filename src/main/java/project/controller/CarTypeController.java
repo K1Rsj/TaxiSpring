@@ -16,9 +16,10 @@ public class CarTypeController {
         this.carTypeService = carTypeService;
     }
 
-    @GetMapping(value = "/")
+    @GetMapping(value = "/types")
     public String getAllCarTypes(Model model) {
         model.addAttribute("carTypes", carTypeService.getAllCarTypes());
+
         return "user/all_car_types";
     }
 }
