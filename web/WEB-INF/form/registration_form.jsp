@@ -14,8 +14,7 @@
                         <div class="card-header">
                         </div>
                         <div class="card-body">
-                            <form class="form" method="post"
-                                  action="${pageContext.request.contextPath}/taxi/user_registration">
+                            <form class="form" method="post" action="/registration">
                                 <div class="form-group">
                                     <label for="login"><fmt:message key="login"/></label>
                                     <input type="text"

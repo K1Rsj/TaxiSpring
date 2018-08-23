@@ -12,4 +12,5 @@
 </c:if>
 
 <jsp:include page="../tables/all_car_types_table.jsp"/>
+<jsp:include page="../form/add_car_type.jsp"/>
 

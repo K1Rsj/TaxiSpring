@@ -70,4 +70,8 @@ public class OrderService {
     public List<Order> getAllUserOrders(String login) {
         return orderRepository.findByUserLogin(login);
     }
+
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
 }

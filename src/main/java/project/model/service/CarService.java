@@ -10,6 +10,7 @@ import project.model.domain.Order;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -36,6 +37,10 @@ public class CarService {
 
     public List<Car> getAllCars() {
         return carRepository.findAllByOrderByCarTypeId();
+    }
+
+    public Optional<Car> getCarById(Integer id) {
+        return carRepository.findById(id);
     }
 
     public void deleteCarById(Integer id) {

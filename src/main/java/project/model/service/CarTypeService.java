@@ -7,6 +7,7 @@ import project.model.domain.CarType;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -37,5 +38,9 @@ public class CarTypeService {
 
     public List<CarType> getAllCarTypes() {
         return carTypeRepository.findAll();
+    }
+
+    public Optional<CarType> getCarTypeById(Integer id) {
+        return carTypeRepository.findById(id);
     }
 }

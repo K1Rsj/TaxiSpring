@@ -9,6 +9,7 @@ import project.model.util.OrderPriceGenerator;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -43,5 +44,9 @@ public class UserService {
 
     public void deleteUserById(Integer userId) {
         userRepository.deleteById(userId);
+    }
+
+    public Optional<User> getUserById(Integer id) {
+        return userRepository.findById(id);
     }
 }
