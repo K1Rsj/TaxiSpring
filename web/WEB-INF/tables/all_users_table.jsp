@@ -13,7 +13,7 @@
         <thead>
         <tr>
             <th scope="col">#</th>
-            <th scope="col"><fmt:message key="login"/></th>
+            <th scope="col"><fmt:message key="login.main"/></th>
             <th scope="col"><fmt:message key="email"/></th>
             <th scope="col"><fmt:message key="first.name"/></th>
             <th scope="col"><fmt:message key="second.name"/></th>

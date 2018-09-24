@@ -1,5 +1,5 @@
 <%@ include file="../components/addition.jsp" %>
-<jsp:include page="components/head.jsp"/>
+<%@include file="../components/head.jsp"%>
 
 <div class="container py-5 " style="padding-top: 12rem!important;">
     <c:if test="${not empty requestScope.informationMessage}">
@@ -16,10 +16,9 @@
                         <div class="card-header">
                         </div>
                         <div class="card-body">
-                            <form class="form" id="formLogin" method="post"
-                                  action="${pageContext.request.contextPath}/taxi/login">
+                            <form class="form" id="formLogin" method="post" action="<c:url value="/login"/>">
                                 <div class="form-group">
-                                    <label for="login"><fmt:message key="login"/></label>
+                                    <label for="login"><fmt:message key="login.main"/></label>
                                     <input type="text"
                                            class="form-control form-control-lg rounded-0"
                                            name="login" id="login">
@@ -36,6 +35,10 @@
                                 <button type="submit"
                                         class="btn btn-success btn-lg float-right"
                                         id="btnLogin"><fmt:message key="log.in"/></button>
+
+                                <%--<input type="hidden"--%>
+                                       <%--name="${_csrf.parameterName}"--%>
+                                       <%--value="${_csrf.token}"/>--%>
                             </form>
                         </div>
                     </div>

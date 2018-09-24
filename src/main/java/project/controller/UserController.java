@@ -1,8 +1,10 @@
 package project.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import project.model.domain.User;
 import project.model.service.UserService;
+import project.validator.UserValidator;
 
 import java.util.Optional;
 
@@ -17,10 +20,11 @@ import java.util.Optional;
 public class UserController {
 
     private UserService userService;
+    private UserValidator userValidator;
 
-    @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserValidator userValidator) {
         this.userService = userService;
+        this.userValidator = userValidator;
     }
 
     @GetMapping("/users")
@@ -31,11 +35,23 @@ public class UserController {
         return "admin/all_users";
     }
 
-    @PostMapping("/register")
-    public String registerUser(@ModelAttribute("user") User user) {
+    @GetMapping("/registration")
+    public String getRegistrationPage(Model model) {
+        model.addAttribute("userForm", new User());
+
+        return "user/user_registration_page";
+    }
+
+    @PostMapping("/registration")
+    public String registerUser(@ModelAttribute("userForm") User user, BindingResult bindingResult) {
+        userValidator.validate(user, bindingResult);
+
+        if(bindingResult.hasErrors()) {
+            return "user/user_registration_page";
+        }
         userService.registerUser(user);
 
-        return "redirect:/users";
+        return "redirect:/login";
     }
 
     @RequestMapping("/users/remove/{id}")
@@ -57,5 +73,13 @@ public class UserController {
         model.addAttribute("users", userService.getAllUsers());
 
         return "admin/all_users";
+    }
+
+    @GetMapping("/my_discount")
+    public String getUserDiscount(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        model.addAttribute("discount", userService.getUserDiscount(auth.getName()));
+
+        return "user/my_discount";
     }
 }

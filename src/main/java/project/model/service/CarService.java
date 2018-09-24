@@ -3,12 +3,12 @@ package project.model.service;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import project.model.dao.repository.CarRepository;
 import project.model.dao.repository.CarTypeRepository;
 import project.model.domain.Car;
 import project.model.domain.Order;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +28,7 @@ public class CarService {
 
     public void addCar(Car car, String type) throws ConstraintViolationException {
         try {
-            car.setCarType(carTypeRepository.findCarTypeByType(type));
+            car.setCarType(carTypeRepository.findByType(type));
             carRepository.save(car);
         } catch (ConstraintViolationException e) {
             throw new ConstraintViolationException(e.getMessage(), e.getSQLException(), e.getConstraintName());

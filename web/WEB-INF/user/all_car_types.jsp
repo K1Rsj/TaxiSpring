@@ -1,16 +1,20 @@
 <%@ include file="../components/addition.jsp" %>
 <jsp:include page="../components/head.jsp"/>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<c:if test="${empty sessionScope.role}">
+<sec:authorize access="isAnonymous()">
     <jsp:include page="../components/header.jsp"/>
-</c:if>
-<c:if test="${sessionScope.role eq 'USER'}">
+</sec:authorize>
+<sec:authorize access="hasRole('USER')">
     <jsp:include page="user_header.jsp"/>
-</c:if>
-<c:if test="${sessionScope.role eq 'ADMIN'}">
+</sec:authorize>
+<sec:authorize access="hasRole('ADMIN')">
     <jsp:include page="../admin/admin_header.jsp"/>
-</c:if>
+</sec:authorize>
 
 <jsp:include page="../tables/all_car_types_table.jsp"/>
-<jsp:include page="../form/add_car_type.jsp"/>
 
+<sec:authorize access="hasRole('ADMIN')">
+<jsp:include page="../form/add_car_type.jsp"/>
+</sec:authorize>

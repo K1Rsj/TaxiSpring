@@ -2,10 +2,10 @@ package project.model.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import project.model.dao.repository.CarTypeRepository;
 import project.model.domain.CarType;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 

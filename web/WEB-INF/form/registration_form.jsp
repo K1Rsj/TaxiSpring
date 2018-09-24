@@ -1,3 +1,5 @@
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ include file="../components/addition.jsp" %>
 <jsp:include page="../components/head.jsp"/>
 
@@ -14,65 +16,136 @@
                         <div class="card-header">
                         </div>
                         <div class="card-body">
-                            <form class="form" method="post" action="/registration">
-                                <div class="form-group">
-                                    <label for="login"><fmt:message key="login"/></label>
-                                    <input type="text"
-                                           class="form-control form-control-lg rounded-0"
-                                           name="login" id="login">
-                                </div>
 
-                                <div class="form-group">
-                                    <label for="password"><fmt:message key="password"/></label>
-                                    <input type="password"
-                                           class="form-control form-control-lg rounded-0"
-                                           name="password" id="password">
-                                </div>
+                            <form:form method="POST" modelAttribute="userForm" class="form" action="/registration">
 
-                                <div class="form-group">
-                                    <label for="password2"><fmt:message
-                                            key="repeat.password"/></label>
-                                    <input type="password"
-                                           class="form-control form-control-lg rounded-0"
-                                           name="password2" id="password2">
-                                </div>
+                                <fmt:message key="login.main"/>
+                                <spring:bind path="login">
+                                    <div class="form-group ${status.error ? 'has-error' : ''}">
+                                        <form:input type="text" path="login" class="form-control" placeholder="login"
+                                                    autofocus="true"/>
+                                        <form:errors path="login" cssClass="errorForm"/>
+                                    </div>
+                                </spring:bind>
 
-                                <div class="form-group">
-                                    <label for="email"><fmt:message key="email"/></label>
-                                    <input type="email"
-                                           class="form-control form-control-lg rounded-0"
-                                           name="email" id="email">
-                                </div>
+                                <fmt:message key="password"/>
+                                <spring:bind path="password">
+                                    <div class="form-group ${status.error ? 'has-error' : ''}">
+                                        <form:input type="password" path="password" class="form-control"
+                                                    placeholder="password"/>
+                                        <form:errors path="password" cssClass="errorForm"/>
+                                    </div>
+                                </spring:bind>
 
-                                <div class="form-group">
-                                    <label for="first_name"><fmt:message
-                                            key="first.name"/></label>
-                                    <input type="text"
-                                           class="form-control form-control-lg rounded-0"
-                                           name="first_name" id="first_name">
-                                </div>
+                                <fmt:message key="repeat.password"/>
+                                <spring:bind path="confirmationPassword">
+                                    <div class="form-group ${status.error ? 'has-error' : ''}">
+                                        <form:input type="password" path="confirmationPassword" class="form-control"
+                                                    placeholder="confirm your password"/>
+                                        <form:errors path="confirmationPassword" cssClass="errorForm"/>
+                                    </div>
+                                </spring:bind>
 
-                                <div class="form-group">
-                                    <label for="second_name"><fmt:message
-                                            key="second.name"/></label>
-                                    <input type="text"
-                                           class="form-control form-control-lg rounded-0"
-                                           name="second_name" id="second_name">
-                                </div>
+                                <fmt:message key="email"/>
+                                <spring:bind path="email">
+                                    <div class="form-group ${status.error ? 'has-error' : ''}">
+                                        <form:input type="text" path="email" class="form-control" placeholder="email"/>
+                                        <form:errors path="email" cssClass="errorForm"/>
+                                    </div>
+                                </spring:bind>
 
-                                <div class="form-group">
-                                    <label for="phone_number"><fmt:message
-                                            key="phone.number"/></label>
-                                    <input type="number"
-                                           class="form-control form-control-lg rounded-0"
-                                           name="phone_number" id="phone_number">
-                                </div>
+                                <fmt:message key="first.name"/>
+                                <spring:bind path="firstName">
+                                    <div class="form-group ${status.error ? 'has-error' : ''}">
+                                        <form:input type="text" path="firstName" class="form-control"
+                                                    placeholder="first name"/>
+                                        <form:errors path="firstName" cssClass="errorForm"/>
+                                    </div>
+                                </spring:bind>
+
+                                <fmt:message key="second.name"/>
+                                <spring:bind path="secondName">
+                                    <div class="form-group ${status.error ? 'has-error' : ''}">
+                                        <form:input type="text" path="secondName" class="form-control"
+                                                    placeholder="second name"/>
+                                        <form:errors path="secondName" cssClass="errorForm"/>
+                                    </div>
+                                </spring:bind>
+
+                                <fmt:message key="phone.number"/>
+                                <spring:bind path="phoneNumber">
+                                    <div class="form-group ${status.error ? 'has-error' : ''}">
+                                        <form:input type="number" path="phoneNumber" class="form-control"
+                                                    placeholder="phone number"/>
+                                        <form:errors path="phoneNumber" cssClass="errorForm"/>
+                                    </div>
+                                </spring:bind>
 
                                 <button type="submit"
-                                        class="btn btn-success btn-lg float-right"
-                                        id="btnLogin"><fmt:message
-                                        key="create.account"/></button>
-                            </form>
+                                        class="btn btn-success btn-lg float-right" id="btnLogin"><fmt:message
+                                        key="create.account"/>
+                                </button>
+
+                            </form:form>
+                            <%--<form class="form" method="post" action="/register">--%>
+                            <%--<div class="form-group">--%>
+                            <%--<label for="login"><fmt:message key="login.main"/></label>--%>
+                            <%--<input type="text"--%>
+                            <%--class="form-control form-control-lg rounded-0"--%>
+                            <%--name="login" id="login">--%>
+                            <%--</div>--%>
+
+                            <%--<div class="form-group">--%>
+                            <%--<label for="password"><fmt:message key="password"/></label>--%>
+                            <%--<input type="password"--%>
+                            <%--class="form-control form-control-lg rounded-0"--%>
+                            <%--name="password" id="password">--%>
+                            <%--</div>--%>
+
+                            <%--<div class="form-group">--%>
+                            <%--<label for="confirmationPassword"><fmt:message--%>
+                            <%--key="repeat.password"/></label>--%>
+                            <%--<input type="password"--%>
+                            <%--class="form-control form-control-lg rounded-0"--%>
+                            <%--name="confirmationPassword" id="confirmationPassword">--%>
+                            <%--</div>--%>
+
+                            <%--<div class="form-group">--%>
+                            <%--<label for="email"><fmt:message key="email"/></label>--%>
+                            <%--<input type="email"--%>
+                            <%--class="form-control form-control-lg rounded-0"--%>
+                            <%--name="email" id="email">--%>
+                            <%--</div>--%>
+
+                            <%--<div class="form-group">--%>
+                            <%--<label for="firstName"><fmt:message--%>
+                            <%--key="first.name"/></label>--%>
+                            <%--<input type="text"--%>
+                            <%--class="form-control form-control-lg rounded-0"--%>
+                            <%--name="firstName" id="firstName">--%>
+                            <%--</div>--%>
+
+                            <%--<div class="form-group">--%>
+                            <%--<label for="secondName"><fmt:message--%>
+                            <%--key="second.name"/></label>--%>
+                            <%--<input type="text"--%>
+                            <%--class="form-control form-control-lg rounded-0"--%>
+                            <%--name="secondName" id="secondName">--%>
+                            <%--</div>--%>
+
+                            <%--<div class="form-group">--%>
+                            <%--<label for="phoneNumber"><fmt:message--%>
+                            <%--key="phone.number"/></label>--%>
+                            <%--<input type="number"--%>
+                            <%--class="form-control form-control-lg rounded-0"--%>
+                            <%--name="phoneNumber" id="phoneNumber">--%>
+                            <%--</div>--%>
+
+                            <%--<button type="submit"--%>
+                            <%--class="btn btn-success btn-lg float-right"--%>
+                            <%--id="btnLogin"><fmt:message--%>
+                            <%--key="create.account"/></button>--%>
+                            <%--</form>--%>
                         </div>
                     </div>
                 </div>

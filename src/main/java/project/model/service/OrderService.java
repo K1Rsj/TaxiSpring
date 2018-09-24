@@ -2,6 +2,7 @@ package project.model.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import project.model.dao.repository.CarRepository;
 import project.model.dao.repository.CarTypeRepository;
 import project.model.dao.repository.OrderRepository;
@@ -11,9 +12,10 @@ import project.model.domain.CarType;
 import project.model.domain.Order;
 import project.model.domain.User;
 import project.model.exception.NoFreeCarWithSuchTypeException;
+import project.model.exception.NoStreetWithSuchName;
 import project.model.util.OrderPriceGenerator;
 
-import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,14 +36,14 @@ public class OrderService {
         this.carTypeRepository = carTypeRepository;
     }
 
-    public Order makeOrder(String login, String departureStreet, String destinationStreet, String type) throws NoFreeCarWithSuchTypeException {
-        Optional<Car> car = carRepository.findByStateAndCarTypeType(Car.State.FREE, type);
+    public Order makeOrder(String login, String departureStreet, String destinationStreet, String type) throws NoFreeCarWithSuchTypeException, IOException, NoStreetWithSuchName {
+        Optional<Car> car = carRepository.findFirstByStateAndCarTypeType(Car.State.FREE, type);
         if (car.isPresent()) {
             carRepository.updateCarState(Car.State.BUSY, car.get().getId());
-            User user = userRepository.findByLogin(login);
-            CarType carType = carTypeRepository.findCarTypeByType(type);
-
+            User user = userRepository.findByLogin(login).get();
+            CarType carType = carTypeRepository.findByType(type);
             Long orderPrice = OrderPriceGenerator.getOrderPrice(user.getMoneySpent(), departureStreet, destinationStreet, carType);
+
             return Order.builder()
                     .departureStreet(departureStreet)
                     .destinationStreet(destinationStreet)
@@ -50,7 +52,6 @@ public class OrderService {
                     .price(orderPrice)
                     .type(carType)
                     .build();
-
         } else {
             throw new NoFreeCarWithSuchTypeException();
         }
@@ -73,5 +74,9 @@ public class OrderService {
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
+    }
+
+    public void removeOrderById(Integer id) {
+        orderRepository.deleteById(id);
     }
 }

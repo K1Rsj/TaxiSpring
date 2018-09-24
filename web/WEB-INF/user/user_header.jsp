@@ -2,8 +2,8 @@
 
 <header id="header" class="header">
     <nav class="navbar navbar-expand-lg bg-black fixed-top">
-                <img src="${pageContext.request.contextPath}/resources/img/logo.png" alt="Taxi"
-                     class="logo">
+        <a href="<c:url value='/user_home'/>"><img src="${pageContext.request.contextPath}/resources/img/logo.png"
+                                              alt="Taxi" class="logo"></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse"
                     data-target="#navbarResponsive"
                     aria-controls="navbarResponsive" aria-expanded="false"
@@ -12,28 +12,22 @@
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto mr-auto">
                     <li class="nav-item">
-                        <a href="${pageContext.request.contextPath}/taxi/index"><fmt:message
-                                key="home"/></a>
+                        <a href="<c:url value='/user_home'/>"><fmt:message key="home"/></a>
                     </li>
                     <li class="nav-item text-center">
-                        <a href="${pageContext.request.contextPath}/taxi/make_order_page"><fmt:message
-                                key="make.order"/></a>
+                        <a href="<c:url value='/make_order'/>"><fmt:message key="make.order"/></a>
                     </li>
                     <li class="nav-item text-center">
-                        <a href="${pageContext.request.contextPath}/taxi/my_orders"><fmt:message
-                                key="my.orders"/></a>
+                        <a href="<c:url value='/my_orders'/>"><fmt:message key="my.orders"/></a>
                     </li>
                     <li class="nav-item text-center">
-                        <a href="${pageContext.request.contextPath}/taxi/my_discount"><fmt:message
-                                key="my.discount"/></a>
+                        <a href="<c:url value='/my_discount'/>"><fmt:message key="my.discount"/></a>
                     </li>
                     <li class="nav-item text-center">
-                        <a href="${pageContext.request.contextPath}/taxi/all_car_types"><fmt:message
-                                key="types.and.prices"/></a>
+                        <a href="<c:url value='/types'/>"><fmt:message key="types.and.prices"/></a>
                     </li>
                     <li class="nav-item text-center">
-                        <a href="${pageContext.request.contextPath}/taxi/logout"><fmt:message
-                                key="log.out"/></a>
+                        <a href="<c:url value='j_spring_security_logout'/>"><fmt:message key="log.out"/></a>
                     </li>
                     <li class="nav-item text-center">
                         <form>

@@ -11,5 +11,5 @@ public interface CarTypeRepository extends JpaRepository<CarType, Integer> {
     @Query("UPDATE CarType carType SET carType.discount = :discount WHERE carType.type = :type")
     void updateDiscount(@Param("discount") Integer discount, @Param("type") String type);
 
-    CarType findCarTypeByType(String type);
+    CarType findByType(String type);
 }

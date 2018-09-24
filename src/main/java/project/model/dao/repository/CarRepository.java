@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CarRepository extends JpaRepository<Car, Integer> {
-    Optional<Car> findByStateAndCarTypeType(Car.State carState, String type);
+    Optional<Car> findFirstByStateAndCarTypeType(Car.State carState, String type);
 
     List<Car> findAllByOrderByCarTypeId();
 

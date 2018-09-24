@@ -69,3 +69,11 @@ img {
     margin-top: 200px;
     color: black;
 }
+
+.errorForm {
+    color: red;
+}
+
+.inline {
+    display: inline;
+}

@@ -6,8 +6,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import project.model.domain.User;
 
+import java.util.Optional;
+
 public interface UserRepository extends JpaRepository<User, Integer> {
-    User findByLogin(String login);
+    Optional<User> findByLogin(String login);
 
     @Modifying
     @Query("UPDATE User user SET user.moneySpent = :moneySpent WHERE user.id = :userId")
