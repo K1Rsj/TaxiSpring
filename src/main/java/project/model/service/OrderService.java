@@ -13,6 +13,7 @@ import project.model.domain.Order;
 import project.model.domain.User;
 import project.model.exception.NoFreeCarWithSuchTypeException;
 import project.model.exception.NoStreetWithSuchName;
+import project.model.util.GeoCodingUtils;
 import project.model.util.OrderPriceGenerator;
 
 import java.io.IOException;
@@ -36,7 +37,9 @@ public class OrderService {
         this.carTypeRepository = carTypeRepository;
     }
 
-    public Order makeOrder(String login, String departureStreet, String destinationStreet, String type) throws NoFreeCarWithSuchTypeException, IOException, NoStreetWithSuchName {
+    public Order makeOrder(String login, String departureStreet, String destinationStreet, String type)
+            throws NoFreeCarWithSuchTypeException, IOException, NoStreetWithSuchName {
+        GeoCodingUtils.checkForStreetNamesExistence(departureStreet, destinationStreet);
         Optional<Car> car = carRepository.findFirstByStateAndCarTypeType(Car.State.FREE, type);
         if (car.isPresent()) {
             carRepository.updateCarState(Car.State.BUSY, car.get().getId());

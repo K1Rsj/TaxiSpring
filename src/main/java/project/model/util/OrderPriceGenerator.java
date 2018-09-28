@@ -43,7 +43,7 @@ public class OrderPriceGenerator {
      * @return user discount
      */
     public static Long getDiscountBasedOnMoneySpent(Long moneySpent) {
-        Long discountRate;
+        long discountRate;
         if (moneySpent <= 100000) {
             discountRate = 0L;
         } else if (moneySpent <= 250000) {

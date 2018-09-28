@@ -6,11 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import project.model.domain.Order;
 import project.model.dto.OrderDTO;
 import project.model.exception.NoFreeCarWithSuchTypeException;
@@ -62,7 +58,7 @@ public class OrderController {
                 Order order = orderService.makeOrder(auth.getName(), orderDTO.getDepartureStreet(), orderDTO.getDestinationStreet(), orderDTO.getType());
                 session.setAttribute("order", order);
                 model.addAttribute("informationMessage", "Approximate wait time is " + OrderPriceGenerator
-                        .getOrderWaitingTime(orderDTO.getDepartureStreet(), orderDTO.getDestinationStreet()));
+                        .getOrderWaitingTime(orderDTO.getDepartureStreet(), orderDTO.getDestinationStreet()) + " minutes.");
                 //model.addAttribute("order", order);
             } catch (NoFreeCarWithSuchTypeException e) {
                 model.addAttribute("informationMessage", "There is no free car with " + orderDTO.getType() + " type.");

@@ -7,7 +7,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 import project.model.domain.User;
 import project.model.service.UserService;
-import project.model.util.BundleManager;
+import project.model.util.BundleManagerClass;
 
 import static project.constant.ExceptionMessages.NOT_UNIQUE_LOGIN;
 import static project.constant.RegexContainer.*;
@@ -18,11 +18,12 @@ public class UserValidator implements Validator {
 
     private UserService userService;
 
-    private static BundleManager bundleManager = BundleManager.INSTANCE;
+    private BundleManagerClass bundleManager;
 
     @Autowired
-    public UserValidator(UserService userService) {
+    public UserValidator(UserService userService, BundleManagerClass bundleManager) {
         this.userService = userService;
+        this.bundleManager = bundleManager;
     }
 
     @Override
@@ -35,7 +36,7 @@ public class UserValidator implements Validator {
         User user = (User) target;
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "login", WRONG_LOGIN_FORMAT);
-        if (!user.getLogin().matches(bundleManager.getString(REGEX_LOGIN))) {
+        if (!user.getLogin().matches(bundleManager.getObject().getString(REGEX_LOGIN))) {
             errors.rejectValue("login", WRONG_LOGIN_FORMAT);
         }
 
@@ -44,7 +45,7 @@ public class UserValidator implements Validator {
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", WRONG_PASSWORD_FORMAT);
-        if (!user.getPassword().matches(bundleManager.getString(REGEX_PASSWORD))) {
+        if (!user.getPassword().matches(bundleManager.getObject().getString(REGEX_PASSWORD))) {
             errors.rejectValue("password", WRONG_PASSWORD_FORMAT);
         }
 
@@ -54,22 +55,22 @@ public class UserValidator implements Validator {
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", WRONG_EMAIL_FORMAT);
-        if (!user.getEmail().matches(bundleManager.getString(REGEX_EMAIL))) {
+        if (!user.getEmail().matches(bundleManager.getObject().getString(REGEX_EMAIL))) {
             errors.rejectValue("email", WRONG_EMAIL_FORMAT);
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "firstName", WRONG_FIRST_NAME_FORMAT);
-        if (!user.getFirstName().matches(bundleManager.getString(REGEX_FIRST_NAME))) {
+        if (!user.getFirstName().matches(bundleManager.getObject().getString(REGEX_FIRST_NAME))) {
             errors.rejectValue("firstName", WRONG_FIRST_NAME_FORMAT);
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secondName", WRONG_SECOND_NAME_FORMAT);
-        if (!user.getSecondName().matches(bundleManager.getString(REGEX_SECOND_NAME))) {
+        if (!user.getSecondName().matches(bundleManager.getObject().getString(REGEX_SECOND_NAME))) {
             errors.rejectValue("secondName", WRONG_SECOND_NAME_FORMAT);
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "phoneNumber", WRONG_PHONE_NUMBER_FORMAT);
-        if (!user.getPhoneNumber().matches(bundleManager.getString(REGEX_PHONE_NUMBER))) {
+        if (!user.getPhoneNumber().matches(bundleManager.getObject().getString(REGEX_PHONE_NUMBER))) {
             errors.rejectValue("phoneNumber", WRONG_PHONE_NUMBER_FORMAT);
         }
     }

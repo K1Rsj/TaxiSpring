@@ -67,7 +67,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
     @Bean
     LocaleResolver localeResolver() {
         SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
-        //sessionLocaleResolver.setDefaultLocale(Locale.ENGLISH);
+        sessionLocaleResolver.setDefaultLocale(Locale.ENGLISH);
 
         return sessionLocaleResolver;
     }
@@ -124,7 +124,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
         return jpaProps;
     }
 
-    public static final String EVIL =
+    static final String EVIL =
             "                            ,-.                                \n"
                     + "       ___,---.__          /'|`\\          __,---,___           \n"
                     + "    ,-'    \\`    `-.____,-'  |  `-.____,-'    //    `-.        \n"

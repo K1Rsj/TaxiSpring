@@ -37,7 +37,7 @@
                             English
                         </option>
                         <option value="uk_UA" ${language == 'uk_UA' ? 'selected' : ''}>
-                            Українська
+                            <fmt:message key="language.ukrainian"/>
                         </option>
                     </select>
                     </form>

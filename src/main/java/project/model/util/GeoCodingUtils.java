@@ -33,11 +33,6 @@ public class GeoCodingUtils {
 
             con.setRequestMethod("GET");
 
-//        if (con.getResponseCode() != 200) {
-//            System.out.println("rip");
-//            return null;
-//        }
-
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
             StringBuilder response = new StringBuilder();
@@ -46,14 +41,14 @@ public class GeoCodingUtils {
                 response.append(inputLine);
             }
             in.close();
-            System.out.println(response.toString());
+
             return response.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static double[] getCoordinates(String address) throws UnsupportedEncodingException, NoStreetWithSuchName {
+    private static double[] getCoordinates(String address) throws UnsupportedEncodingException, NoStreetWithSuchName {
         double[] coordinates = new double[2];
         StringBuilder query = new StringBuilder();
         String[] split = address.split(" ");
@@ -67,17 +62,10 @@ public class GeoCodingUtils {
             }
         }
         query.append("&format=json&addressdetails=1");
-        System.out.println(query);
 
-        String queryResult = null;
-        try {
-            queryResult = getRequest(query.toString());
-            System.out.println(queryResult);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        String queryResult = getRequest(query.toString());
 
-        if (queryResult == null || queryResult.equals("[]")) {
+        if (queryResult.equals("[]")) {
             throw new NoStreetWithSuchName(address);
         }
 
@@ -89,8 +77,6 @@ public class GeoCodingUtils {
 
             String lon = (String) jsonObject.get("lon");
             String lat = (String) jsonObject.get("lat");
-            System.out.println("lon=" + lon);
-            System.out.println("lat=" + lat);
             coordinates[0] = Double.parseDouble(lon);
             coordinates[1] = Double.parseDouble(lat);
         }
@@ -98,19 +84,25 @@ public class GeoCodingUtils {
         return coordinates;
     }
 
-    public static List<DirectionsRoute> getRouteInformation(String departureStreet, String destinationStreet) throws NoStreetWithSuchName, IOException {
+    static List<DirectionsRoute> getRouteInformation(String departureStreet, String destinationStreet) throws NoStreetWithSuchName, IOException {
         MapboxDirections client = new MapboxDirections.Builder<>()
                 .setAccessToken(MapBoxAPIKeys.publicToken)
                 .setOrigin(Position.fromCoordinates(Objects.requireNonNull(GeoCodingUtils.getCoordinates(departureStreet))))
                 .setDestination(Position.fromCoordinates(Objects.requireNonNull(GeoCodingUtils.getCoordinates(destinationStreet))))
                 .setProfile(DirectionsCriteria.PROFILE_DRIVING)
+                .setLanguage("uk")
                 .build();
         Response<DirectionsResponse> directionsResponse = client.executeCall();
-        List<DirectionsRoute> routes = directionsResponse.body().getRoutes();
-        routes.stream().map(route -> route.getDistance() / 1000).forEach(System.out::println);
-        routes.stream().map(route -> Math.round(route.getDuration() / 60)).forEach(System.out::println);
-        System.out.println(directionsResponse.body().getRoutes());
 
-        return routes;
+        return directionsResponse.body().getRoutes();
+    }
+
+    public static void checkForStreetNamesExistence(String departureStreet, String destinationStreet) throws IOException, NoStreetWithSuchName {
+        try {
+            getCoordinates(departureStreet);
+            getCoordinates(destinationStreet);
+        } catch (NoStreetWithSuchName e) {
+            throw new NoStreetWithSuchName(e.getStreetName());
+        }
     }
 }

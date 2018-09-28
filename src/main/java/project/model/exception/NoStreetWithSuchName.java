@@ -2,14 +2,18 @@ package project.model.exception;
 
 public class NoStreetWithSuchName extends Exception {
 
-    private String message;
+    private String streetName;
 
     public NoStreetWithSuchName(String message) {
-        this.message = message;
+        this.streetName = message;
+    }
+
+    public String getStreetName() {
+        return streetName;
     }
 
     @Override
     public String getMessage() {
-        return "There is no street with " + message + " name";
+        return "There is no street with " + streetName + " name";
     }
 }
