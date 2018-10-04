@@ -4,10 +4,10 @@ import com.mysql.jdbc.Driver;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.cfg.Environment;
 import org.hibernate.dialect.MySQL5Dialect;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -17,7 +17,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -29,12 +28,17 @@ import javax.sql.DataSource;
 import java.util.Locale;
 import java.util.Properties;
 
-@Configuration
+//@Configuration
+//@EnableWebMvc
+//@ComponentScan("project")
+@SpringBootApplication
 @EnableTransactionManagement
-@EnableWebMvc
-@ComponentScan("project")
 @EnableJpaRepositories("project.model.dao.repository")
 public class ApplicationConfig implements WebMvcConfigurer {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ApplicationConfig.class, args);
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -124,7 +128,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
         return jpaProps;
     }
 
-    static final String EVIL =
+    public static final String EVIL =
             "                            ,-.                                \n"
                     + "       ___,---.__          /'|`\\          __,---,___           \n"
                     + "    ,-'    \\`    `-.____,-'  |  `-.____,-'    //    `-.        \n"

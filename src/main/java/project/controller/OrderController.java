@@ -93,7 +93,7 @@ public class OrderController {
         session.removeAttribute("order");
         model.addAttribute("informationMessage", "Have a good trip");
 
-        return "user/user_foundation";
+        return "redirect:/user_home";
     }
 
     @PostMapping("/cancel_order")
@@ -102,6 +102,6 @@ public class OrderController {
         session.removeAttribute("order");
         model.addAttribute("informationMessage", "We regret that something didn't suit you.");
 
-        return "user/user_foundation";
+        return "redirect:/user_home";
     }
 }

@@ -1,4 +1,4 @@
-package project;
+package project.config;
 
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
@@ -6,6 +6,7 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
+import project.ApplicationConfig;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
