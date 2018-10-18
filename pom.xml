@@ -6,6 +6,7 @@
 
     <groupId>my.project</groupId>
     <artifactId>TaxiSpring</artifactId>
+    <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
@@ -126,6 +127,13 @@
                     <artifactId>spring-boot-starter-logging</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            <version>8.5.34</version>
+            <!--<scope>provided</scope>-->
         </dependency>
 
     </dependencies>

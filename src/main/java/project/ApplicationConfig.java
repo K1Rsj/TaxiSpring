@@ -37,6 +37,8 @@ import java.util.Properties;
 public class ApplicationConfig implements WebMvcConfigurer {
 
     public static void main(String[] args) {
+        System.setProperty("server.port", "8015");
+        System.setProperty("server.error.whitelabel.enabled", "false");
         SpringApplication.run(ApplicationConfig.class, args);
     }
 
@@ -54,7 +56,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
     @Bean
     MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.addBasenames("/WEB-INF/resources/messages");
+        messageSource.addBasenames("/WEB-INF/jsp/resources/messages");
         messageSource.setDefaultEncoding("UTF-8");
 
         return messageSource;
@@ -80,7 +82,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
     public ViewResolver viewResolver() {
         InternalResourceViewResolver internalResourceViewResolver = new InternalResourceViewResolver();
         //internalResourceViewResolver.setViewClass(JstlView.class);
-        internalResourceViewResolver.setPrefix("/WEB-INF/");
+        internalResourceViewResolver.setPrefix("/WEB-INF/jsp/");
         internalResourceViewResolver.setSuffix(".jsp");
 
         return internalResourceViewResolver;

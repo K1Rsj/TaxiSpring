@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import project.constant.GlobalConfig;
 
 @Configuration
 @EnableWebSecurity
@@ -43,12 +44,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/types").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/registration").anonymous()
-                .antMatchers("/users/**").access("hasRole('ADMIN')")
-                .antMatchers("/cars/**").access("hasRole('ADMIN')")
-                .antMatchers("/orders/**").access("hasRole('ADMIN')")
-                .antMatchers("/types/edit").access("hasRole('ADMIN')")
-                .antMatchers("/types/remove").access("hasRole('ADMIN')")
-                .antMatchers("/types/add").access("hasRole('ADMIN')")
+                .antMatchers("/admin_home").access(GlobalConfig.HAS_ROLE_ADMIN)
+                .antMatchers("/users/**").access(GlobalConfig.HAS_ROLE_ADMIN)
+                .antMatchers("/cars/**").access(GlobalConfig.HAS_ROLE_ADMIN)
+                .antMatchers("/orders/**").access(GlobalConfig.HAS_ROLE_ADMIN)
+                .antMatchers("/types/edit").access(GlobalConfig.HAS_ROLE_ADMIN)
+                .antMatchers("/types/remove").access(GlobalConfig.HAS_ROLE_ADMIN)
+                .antMatchers("/types/add").access(GlobalConfig.HAS_ROLE_ADMIN)
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
