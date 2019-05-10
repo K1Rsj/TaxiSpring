@@ -4,8 +4,6 @@ package project.model.util;
 import project.model.domain.CarType;
 import project.model.exception.NoStreetWithSuchName;
 
-import java.io.IOException;
-
 /**
  * Generates price for order
  */
@@ -20,8 +18,10 @@ public class OrderPriceGenerator {
      * @param carType           car type
      * @return order price
      */
-    public static Long getOrderPrice(Long moneySpent, String departureStreet, String destinationStreet, CarType carType) throws IOException, NoStreetWithSuchName {
-        Long distance = Math.round(GeoCodingUtils.getRouteInformation(departureStreet, destinationStreet).stream().map(route -> route.getDistance() / 1000).findFirst().get());
+    public static Long getOrderPrice(Long moneySpent, String departureStreet, String destinationStreet,
+                                     CarType carType) throws NoStreetWithSuchName {
+        Long distance =
+                Math.round(GeoCodingUtils.getRouteInformation(departureStreet, destinationStreet).stream().map(route -> route.getDistance() / 1000).findFirst().get());
         Long discount = getDiscountBasedOnMoneySpent(moneySpent) + carType.getDiscount();
         Long orderPrice = (carType.getStartingPrice() + (distance * carType.getPricePerKilometer()));
         if (discount.equals(0L)) {
@@ -31,7 +31,7 @@ public class OrderPriceGenerator {
         return orderPrice;
     }
 
-    public static Long getOrderWaitingTime(String departureStreet, String destinationStreet) throws IOException, NoStreetWithSuchName {
+    public static Long getOrderTravelTime(String departureStreet, String destinationStreet) throws NoStreetWithSuchName {
 
         return Math.round(GeoCodingUtils.getRouteInformation(departureStreet, destinationStreet).stream().map(route -> route.getDuration() / 60).findFirst().get());
     }

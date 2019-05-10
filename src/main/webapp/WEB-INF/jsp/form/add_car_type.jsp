@@ -4,8 +4,8 @@
 <jsp:include page="../components/head.jsp"/>
 
 <h1 class="text-center text-white mb-4">Add new car type</h1>
-
-<form:form action="/types/add" modelAttribute="carType" class="text-center text-white mb-4">
+<div>
+<form:form method="POST" modelAttribute="carType" class="text-center text-white mb-4" action="/types/add">
     <table  align="center">
         <c:if test="${!empty carType.type}">
             <tr>
@@ -72,3 +72,4 @@
         </tr>
     </table>
 </form:form>
+</div>

@@ -1,16 +1,23 @@
 package project.model.service;
 
-import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import project.model.dao.repository.CarRepository;
-import project.model.dao.repository.CarTypeRepository;
-import project.model.domain.Car;
-import project.model.domain.Order;
+import static project.constant.EntityFields.NUMBER;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import project.model.dao.repository.CarRepository;
+import project.model.dao.repository.CarTypeRepository;
+import project.model.domain.Car;
+import project.model.domain.CarType;
+import project.model.domain.Order;
+import project.model.dto.CarDto;
+import project.model.exception.EntityAlreadyExists;
 
 @Service
 @Transactional
@@ -18,20 +25,24 @@ public class CarService {
 
     private CarRepository carRepository;
     private CarTypeRepository carTypeRepository;
+    private ModelMapper modelMapper;
 
     @Autowired
-    public CarService(CarRepository carRepository, CarTypeRepository carTypeRepository) {
+    public CarService(CarRepository carRepository, CarTypeRepository carTypeRepository, ModelMapper modelMapper) {
         this.carRepository = carRepository;
         this.carTypeRepository = carTypeRepository;
+        this.modelMapper = modelMapper;
     }
 
-
-    public void addCar(Car car, String type) throws ConstraintViolationException {
+    @Transactional(rollbackFor = EntityAlreadyExists.class)
+    public void addCar(CarDto carDTO) throws EntityAlreadyExists{
         try {
-            car.setCarType(carTypeRepository.findByType(type));
+            CarType carType = carTypeRepository.findByType(carDTO.getCarType());
+            Car car = modelMapper.map(carDTO, Car.class);
+            car.setCarType(carType);
             carRepository.save(car);
-        } catch (ConstraintViolationException e) {
-            throw new ConstraintViolationException(e.getMessage(), e.getSQLException(), e.getConstraintName());
+        } catch (DataIntegrityViolationException e) {
+            throw new EntityAlreadyExists(NUMBER, carDTO.getNumber());
         }
     }
 

@@ -1,8 +1,12 @@
 package project.model.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import project.model.dao.repository.CarRepository;
 import project.model.dao.repository.CarTypeRepository;
 import project.model.dao.repository.OrderRepository;
@@ -15,10 +19,6 @@ import project.model.exception.NoFreeCarWithSuchTypeException;
 import project.model.exception.NoStreetWithSuchName;
 import project.model.util.GeoCodingUtils;
 import project.model.util.OrderPriceGenerator;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -38,7 +38,7 @@ public class OrderService {
     }
 
     public Order makeOrder(String login, String departureStreet, String destinationStreet, String type)
-            throws NoFreeCarWithSuchTypeException, IOException, NoStreetWithSuchName {
+            throws NoFreeCarWithSuchTypeException, NoStreetWithSuchName {
         GeoCodingUtils.checkForStreetNamesExistence(departureStreet, destinationStreet);
         Optional<Car> car = carRepository.findFirstByStateAndCarTypeType(Car.State.FREE, type);
         if (car.isPresent()) {
@@ -56,7 +56,7 @@ public class OrderService {
                     .type(carType)
                     .build();
         } else {
-            throw new NoFreeCarWithSuchTypeException();
+            throw new NoFreeCarWithSuchTypeException(type);
         }
     }
 

@@ -12,4 +12,6 @@ public interface ExceptionMessages {
     String USER_ALREADY_LOGGED = "already.logged.user";
     String NOT_UNIQUE_LOGIN = "not.unique.login";
     String NOT_UNIQUE_EMAIL = "not.unique.email";
+    String NO_STREET_WITH_THIS_NAME = "no.street.with.this.name";
+    String CAR_WITH_THIS_ID_DOES_NOT_EXIST = "car.with.this.id.does.not.exist";
 }

@@ -1,11 +1,14 @@
 package project.model.exception;
 
+import static project.constant.ExceptionMessages.NO_STREET_WITH_THIS_NAME;
+import static project.constant.GlobalConstants.DASH;
+
 public class NoStreetWithSuchName extends Exception {
 
-    private String streetName;
+    private final String streetName;
 
-    public NoStreetWithSuchName(String message) {
-        this.streetName = message;
+    public NoStreetWithSuchName(String streetName) {
+        this.streetName = streetName;
     }
 
     public String getStreetName() {
@@ -14,6 +17,6 @@ public class NoStreetWithSuchName extends Exception {
 
     @Override
     public String getMessage() {
-        return "There is no street with " + streetName + " name";
+        return NO_STREET_WITH_THIS_NAME + DASH + streetName;
     }
 }

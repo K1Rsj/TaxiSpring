@@ -5,9 +5,9 @@
 
 <h1 class="text-center text-white mb-4">Add new car</h1>
 <div>
-    <form:form action="/cars/add" modelAttribute="car" class="text-center text-white mb-4">
+    <form:form method="POST" modelAttribute="car" class="text-center text-white mb-4" action="/cars/add">
         <table align="center">
-            <c:if test="${!empty car.number}">
+            <c:if test="${!empty car.model}">
                 <tr>
                     <td>
                         <form:label path="id">
@@ -20,51 +20,79 @@
             </c:if>
             <tr>
                 <td>
-                    <form:label path="model">
-                        <spring:message text="Model"/>
-                    </form:label>
+                    <fmt:message key="model"/>
                 </td>
                 <td>
-                    <form:input path="model"/>
+                    <spring:bind path="model">
+                        <div class="form-group ${status.error ? 'has-error' : ''}">
+                            <form:input type="text" path="model" class="form-control"/>
+                            <form:errors path="model" cssClass="errorForm"/>
+                        </div>
+                    </spring:bind>
                 </td>
             </tr>
+
             <tr>
                 <td>
-                    <form:label path="number">
-                        <spring:message text="Number"/>
-                    </form:label>
+                    <fmt:message key="number"/>
                 </td>
                 <td>
-                    <form:input path="number"/>
+                    <spring:bind path="number">
+                        <div class="form-group ${status.error ? 'has-error' : ''}">
+                            <form:input type="text" path="number" class="form-control"/>
+                            <form:errors path="number" cssClass="errorForm"/>
+                        </div>
+                    </spring:bind>
                 </td>
             </tr>
+
             <tr>
                 <td>
-                    <form:label path="state">
-                        <spring:message text="State"/>
-                    </form:label>
+                    <fmt:message key="driver"/>
                 </td>
                 <td>
-                    <form:input path="state"/>
+                    <spring:bind path="driver">
+                        <div class="form-group ${status.error ? 'has-error' : ''}">
+                            <form:input type="text" path="driver" class="form-control"/>
+                            <form:errors path="driver" cssClass="errorForm"/>
+                        </div>
+                    </spring:bind>
                 </td>
             </tr>
+
             <tr>
                 <td>
-                    <form:label path="driver">
-                        <spring:message text="Driver"/>
-                    </form:label>
+                    <label for="state"><fmt:message key="state"/></label>
                 </td>
                 <td>
-                    <form:input path="driver"/>
+                    <select class="form-control form-control-lg rounded-0" name="state" id="state">
+                        <option selected value="FREE">Free</option>
+                        <option value="BUSY">Busy</option>
+                    </select>
                 </td>
             </tr>
+
+            <tr>
+                <td>
+                    <label for="carType"><fmt:message key="car.type"/></label>
+                </td>
+                <td>
+                    <select class="form-control form-control-lg rounded-0" name="carType" id="carType">
+                        <option selected value="standard">Standard</option>
+                        <option value="comfort">Comfort</option>
+                        <option value="minibus">Minibus</option>
+                        <option value="premium">Premium</option>
+                    </select>
+                </td>
+            </tr>
+
             <tr>
                 <td colspan="2">
-                    <c:if test="${!empty car.number}">
+                    <c:if test="${!empty car.model}">
                         <input type="submit"
                                value="<spring:message text="Edit Car"/>"/>
                     </c:if>
-                    <c:if test="${empty car.number}">
+                    <c:if test="${empty car.model}">
                         <input type="submit"
                                value="<spring:message text="Add Car"/>"/>
                     </c:if>

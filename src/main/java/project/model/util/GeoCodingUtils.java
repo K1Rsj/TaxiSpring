@@ -1,18 +1,6 @@
 package project.model.util;
 
 
-import com.mapbox.services.api.directions.v5.DirectionsCriteria;
-import com.mapbox.services.api.directions.v5.MapboxDirections;
-import com.mapbox.services.api.directions.v5.models.DirectionsResponse;
-import com.mapbox.services.api.directions.v5.models.DirectionsRoute;
-import com.mapbox.services.commons.models.Position;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import project.constant.MapBoxAPIKeys;
-import project.model.exception.NoStreetWithSuchName;
-import retrofit2.Response;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,6 +10,21 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Objects;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
+import com.mapbox.services.api.directions.v5.DirectionsCriteria;
+import com.mapbox.services.api.directions.v5.MapboxDirections;
+import com.mapbox.services.api.directions.v5.models.DirectionsResponse;
+import com.mapbox.services.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.services.commons.models.Position;
+
+import javafx.util.Pair;
+import project.constant.MapBoxAPIKeys;
+import project.model.exception.NoStreetWithSuchName;
+import retrofit2.Response;
 
 public class GeoCodingUtils {
 
@@ -48,8 +51,8 @@ public class GeoCodingUtils {
         }
     }
 
-    private static double[] getCoordinates(String address) throws UnsupportedEncodingException, NoStreetWithSuchName {
-        double[] coordinates = new double[2];
+    private static Pair<Double, Double> getCoordinates(String address) throws UnsupportedEncodingException, NoStreetWithSuchName {
+        Pair<Double, Double> coordinates = null;
         StringBuilder query = new StringBuilder();
         String[] split = address.split(" ");
 
@@ -72,37 +75,45 @@ public class GeoCodingUtils {
         Object obj = JSONValue.parse(queryResult);
 
         JSONArray array = (JSONArray) obj;
-        if (array.size() > 0) {
+        if (!array.isEmpty()) {
             JSONObject jsonObject = (JSONObject) array.get(0);
 
-            String lon = (String) jsonObject.get("lon");
-            String lat = (String) jsonObject.get("lat");
-            coordinates[0] = Double.parseDouble(lon);
-            coordinates[1] = Double.parseDouble(lat);
+            Double lon = Double.parseDouble((String)jsonObject.get("lon"));
+            Double lat = Double.parseDouble((String)jsonObject.get("lat"));
+            coordinates = new Pair<>(lon, lat);
         }
 
         return coordinates;
     }
 
-    static List<DirectionsRoute> getRouteInformation(String departureStreet, String destinationStreet) throws NoStreetWithSuchName, IOException {
+    static List<DirectionsRoute> getRouteInformation(String departureStreet, String destinationStreet) throws NoStreetWithSuchName{
+        Response<DirectionsResponse> directionsResponse;
+        try {
         MapboxDirections client = new MapboxDirections.Builder<>()
                 .setAccessToken(MapBoxAPIKeys.publicToken)
-                .setOrigin(Position.fromCoordinates(Objects.requireNonNull(GeoCodingUtils.getCoordinates(departureStreet))))
-                .setDestination(Position.fromCoordinates(Objects.requireNonNull(GeoCodingUtils.getCoordinates(destinationStreet))))
+                .setOrigin(Position.fromCoordinates(Objects.requireNonNull(GeoCodingUtils.getCoordinates(departureStreet)).getKey(),
+                        Objects.requireNonNull(GeoCodingUtils.getCoordinates(departureStreet)).getValue()))
+                .setDestination(Position.fromCoordinates(Objects.requireNonNull(GeoCodingUtils.getCoordinates(destinationStreet)).getKey(),
+                        Objects.requireNonNull(GeoCodingUtils.getCoordinates(destinationStreet)).getValue()))
                 .setProfile(DirectionsCriteria.PROFILE_DRIVING)
                 .setLanguage("uk")
                 .build();
-        Response<DirectionsResponse> directionsResponse = client.executeCall();
+            directionsResponse = client.executeCall();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return directionsResponse.body().getRoutes();
     }
 
-    public static void checkForStreetNamesExistence(String departureStreet, String destinationStreet) throws IOException, NoStreetWithSuchName {
+    public static void checkForStreetNamesExistence(String departureStreet, String destinationStreet) throws NoStreetWithSuchName {
         try {
             getCoordinates(departureStreet);
             getCoordinates(destinationStreet);
         } catch (NoStreetWithSuchName e) {
             throw new NoStreetWithSuchName(e.getStreetName());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
     }
 }

@@ -1,106 +1,136 @@
 package project.controller;
 
+import static project.constant.ExceptionMessages.YOU_CAN_ONLY_HAVE_ONE_ORDER_AT_TIME;
+import static project.constant.GlobalConstants.ID;
+import static project.constant.GlobalConstants.INFORMATION_MESSAGE;
+import static project.constant.GlobalConstants.ORDER;
+import static project.constant.GlobalConstants.ORDERS;
+import static project.constant.GlobalConstants.SPACE;
+import static project.constant.Messages.APPROXIMATE_TRAVEL_TIME;
+import static project.constant.Messages.HAVE_A_GOOD_TRIP;
+import static project.constant.Messages.MINUTES;
+import static project.constant.Messages.WE_ARE_DISAPPOINTED;
+import static project.constant.URL.CANCEL_ORDER;
+import static project.constant.URL.CONFIRM_ORDER;
+import static project.constant.URL.MAKE_ORDER;
+import static project.constant.URL.MY_ORDERS;
+
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import project.model.domain.Order;
-import project.model.dto.OrderDTO;
+import project.model.dto.OrderDto;
 import project.model.exception.NoFreeCarWithSuchTypeException;
 import project.model.exception.NoStreetWithSuchName;
 import project.model.service.OrderService;
 import project.model.util.OrderPriceGenerator;
-import project.validator.OrderDTOValidator;
-
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
+import project.model.util.Utils;
+import project.validator.OrderValidator;
 
 @Controller
 public class OrderController {
 
-    private OrderDTOValidator orderDTOValidator;
+    private OrderValidator orderValidator;
     private OrderService orderService;
+    private ReloadableResourceBundleMessageSource bundleMessageSource;
 
     @Autowired
-    public OrderController(OrderDTOValidator orderDTOValidator, OrderService orderService) {
-        this.orderDTOValidator = orderDTOValidator;
+    public OrderController(OrderValidator orderValidator, OrderService orderService,
+                           ReloadableResourceBundleMessageSource bundleMessageSource) {
+        this.orderValidator = orderValidator;
         this.orderService = orderService;
+        this.bundleMessageSource = bundleMessageSource;
     }
 
-    @GetMapping("/orders")
+    @GetMapping(ORDERS)
     public String getAllOrders(Model model) {
-        model.addAttribute("orders", orderService.getAllOrders());
+        model.addAttribute(ORDERS, orderService.getAllOrders());
 
         return "admin/all_orders";
     }
 
-    @GetMapping("/make_order")
+    @GetMapping(MAKE_ORDER)
     public String getMakeOrderPage(Model model) {
-        model.addAttribute("order", new OrderDTO());
+        model.addAttribute(ORDER, new OrderDto());
 
         return "user/make_order_page";
     }
 
-    @PostMapping("/make_order")
-    public String makeOrder(@ModelAttribute("order") OrderDTO orderDTO, Model model, BindingResult bindingResult, HttpSession session) {
-        if (session.getAttribute("order") != null) {
-            model.addAttribute("informationMessage", "You already have order, confirm or cancel it");
+    @PostMapping(MAKE_ORDER)
+    public String makeOrder(@ModelAttribute(ORDER) OrderDto orderDTO, Model model,
+                            BindingResult bindingResult, HttpSession session) {
+        if (session.getAttribute(ORDER) != null) {
+            model.addAttribute(INFORMATION_MESSAGE, Utils.getMessageInCurrentLocale(bundleMessageSource,
+                    YOU_CAN_ONLY_HAVE_ONE_ORDER_AT_TIME));
         } else {
-            orderDTOValidator.validate(orderDTO, bindingResult);
+            orderValidator.validate(orderDTO, bindingResult);
             if (bindingResult.hasErrors()) {
                 return "user/make_order_page";
             }
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             try {
-                Order order = orderService.makeOrder(auth.getName(), orderDTO.getDepartureStreet(), orderDTO.getDestinationStreet(), orderDTO.getType());
-                session.setAttribute("order", order);
-                model.addAttribute("informationMessage", "Approximate wait time is " + OrderPriceGenerator
-                        .getOrderWaitingTime(orderDTO.getDepartureStreet(), orderDTO.getDestinationStreet()) + " minutes.");
+                Order order = orderService.makeOrder(auth.getName(), orderDTO.getDepartureStreet(),
+                        orderDTO.getDestinationStreet(), orderDTO.getType());
+                session.setAttribute(ORDER, order);
+                model.addAttribute(INFORMATION_MESSAGE, Utils.getMessageInCurrentLocale(
+                        bundleMessageSource, APPROXIMATE_TRAVEL_TIME) + SPACE + OrderPriceGenerator
+                        .getOrderTravelTime(orderDTO.getDepartureStreet(),
+                        orderDTO.getDestinationStreet()) + SPACE +  Utils.getMessageInCurrentLocale(bundleMessageSource,
+                        MINUTES));
                 //model.addAttribute("order", order);
             } catch (NoFreeCarWithSuchTypeException e) {
-                model.addAttribute("informationMessage", "There is no free car with " + orderDTO.getType() + " type.");
+                model.addAttribute(INFORMATION_MESSAGE, Utils.getMessageInCurrentLocale(bundleMessageSource,
+                        e.getMessage()));
             } catch (NoStreetWithSuchName e) {
-                model.addAttribute("informationMessage", "There is no street with " + e.getMessage());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                model.addAttribute(INFORMATION_MESSAGE, e.getMessage());
             }
         }
 
         return "user/user_foundation";
     }
 
-    @GetMapping("/my_orders")
+    @GetMapping(MY_ORDERS)
     public String getAllUserOrders(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        model.addAttribute("orders", orderService.getAllUserOrders(auth.getName()));
+        model.addAttribute(ORDERS, orderService.getAllUserOrders(auth.getName()));
 
         return "user/my_orders";
     }
 
     @RequestMapping("/orders/remove/{id}")
-    public String removeOrder(@PathVariable("id") Integer id) {
+    public String removeOrder(@PathVariable(ID) Integer id) {
         orderService.removeOrderById(id);
 
         return "redirect:/orders";
     }
 
-    @PostMapping("/confirm_order")
+    @PostMapping(CONFIRM_ORDER)
     public String confirmOrder(Model model, HttpSession session) {
-        orderService.confirmOrder((Order) session.getAttribute("order"));
-        session.removeAttribute("order");
-        model.addAttribute("informationMessage", "Have a good trip");
+        orderService.confirmOrder((Order) session.getAttribute(ORDER));
+        session.removeAttribute(ORDER);
+        model.addAttribute(INFORMATION_MESSAGE, Utils.getMessageInCurrentLocale(bundleMessageSource, HAVE_A_GOOD_TRIP));
 
         return "redirect:/user_home";
     }
 
-    @PostMapping("/cancel_order")
+    @PostMapping(CANCEL_ORDER)
     public String cancelOrder(Model model, HttpSession session) {
-        orderService.cancelOrder((Order) session.getAttribute("order"));
-        session.removeAttribute("order");
-        model.addAttribute("informationMessage", "We regret that something didn't suit you.");
+        orderService.cancelOrder((Order) session.getAttribute(ORDER));
+        session.removeAttribute(ORDER);
+        model.addAttribute(INFORMATION_MESSAGE, Utils.getMessageInCurrentLocale(bundleMessageSource,
+                WE_ARE_DISAPPOINTED));
 
         return "redirect:/user_home";
     }

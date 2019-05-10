@@ -4,8 +4,8 @@
 <jsp:include page="../components/head.jsp"/>
 
 <div class="container py-5 " style="padding-top: 12rem!important;">
-    <c:if test="${not empty requestScope.wrongInputMessage}">
-        <div class="alert alert-info text-center">${requestScope.wrongInputMessage}</div>
+    <c:if test="${not empty requestScope.informationMessage}">
+        <div class="alert alert-info text-center">${requestScope.informationMessage}</div>
     </c:if>
     <div class="row">
         <div class="col-md-12">
@@ -17,7 +17,7 @@
                         </div>
                         <div class="card-body">
 
-                            <form:form method="POST" modelAttribute="userForm" class="form" action="/registration">
+                            <form:form method="POST" modelAttribute="user" class="form" action="/registration">
 
                                 <fmt:message key="login.main"/>
                                 <spring:bind path="login">
@@ -85,67 +85,7 @@
                                         class="btn btn-success btn-lg float-right" id="btnLogin"><fmt:message
                                         key="create.account"/>
                                 </button>
-
                             </form:form>
-                            <%--<form class="form" method="post" action="/register">--%>
-                            <%--<div class="form-group">--%>
-                            <%--<label for="login"><fmt:message key="login.main"/></label>--%>
-                            <%--<input type="text"--%>
-                            <%--class="form-control form-control-lg rounded-0"--%>
-                            <%--name="login" id="login">--%>
-                            <%--</div>--%>
-
-                            <%--<div class="form-group">--%>
-                            <%--<label for="password"><fmt:message key="password"/></label>--%>
-                            <%--<input type="password"--%>
-                            <%--class="form-control form-control-lg rounded-0"--%>
-                            <%--name="password" id="password">--%>
-                            <%--</div>--%>
-
-                            <%--<div class="form-group">--%>
-                            <%--<label for="confirmationPassword"><fmt:message--%>
-                            <%--key="repeat.password"/></label>--%>
-                            <%--<input type="password"--%>
-                            <%--class="form-control form-control-lg rounded-0"--%>
-                            <%--name="confirmationPassword" id="confirmationPassword">--%>
-                            <%--</div>--%>
-
-                            <%--<div class="form-group">--%>
-                            <%--<label for="email"><fmt:message key="email"/></label>--%>
-                            <%--<input type="email"--%>
-                            <%--class="form-control form-control-lg rounded-0"--%>
-                            <%--name="email" id="email">--%>
-                            <%--</div>--%>
-
-                            <%--<div class="form-group">--%>
-                            <%--<label for="firstName"><fmt:message--%>
-                            <%--key="first.name"/></label>--%>
-                            <%--<input type="text"--%>
-                            <%--class="form-control form-control-lg rounded-0"--%>
-                            <%--name="firstName" id="firstName">--%>
-                            <%--</div>--%>
-
-                            <%--<div class="form-group">--%>
-                            <%--<label for="secondName"><fmt:message--%>
-                            <%--key="second.name"/></label>--%>
-                            <%--<input type="text"--%>
-                            <%--class="form-control form-control-lg rounded-0"--%>
-                            <%--name="secondName" id="secondName">--%>
-                            <%--</div>--%>
-
-                            <%--<div class="form-group">--%>
-                            <%--<label for="phoneNumber"><fmt:message--%>
-                            <%--key="phone.number"/></label>--%>
-                            <%--<input type="number"--%>
-                            <%--class="form-control form-control-lg rounded-0"--%>
-                            <%--name="phoneNumber" id="phoneNumber">--%>
-                            <%--</div>--%>
-
-                            <%--<button type="submit"--%>
-                            <%--class="btn btn-success btn-lg float-right"--%>
-                            <%--id="btnLogin"><fmt:message--%>
-                            <%--key="create.account"/></button>--%>
-                            <%--</form>--%>
                         </div>
                     </div>
                 </div>

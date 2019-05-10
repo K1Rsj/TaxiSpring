@@ -1,5 +1,11 @@
 package project.controller;
 
+import static project.constant.GlobalConstants.INFORMATION_MESSAGE;
+
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -10,15 +16,19 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import project.constant.Messages;
 import project.model.domain.User;
+import project.model.dto.UserDto;
+import project.model.exception.EntityAlreadyExists;
 import project.model.service.UserService;
 import project.validator.UserValidator;
-
-import java.util.Optional;
 
 @Controller
 public class UserController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
     private UserService userService;
     private UserValidator userValidator;
 
@@ -37,20 +47,29 @@ public class UserController {
 
     @GetMapping("/registration")
     public String getRegistrationPage(Model model) {
-        model.addAttribute("userForm", new User());
-
+        if (!model.containsAttribute("user")) {
+            model.addAttribute("user", new User());
+        }
         return "user/user_registration_page";
     }
 
     @PostMapping("/registration")
-    public String registerUser(@ModelAttribute("userForm") User user, BindingResult bindingResult) {
-        userValidator.validate(user, bindingResult);
-
-        if(bindingResult.hasErrors()) {
-            return "user/user_registration_page";
+    public String registerUser(@ModelAttribute("user") UserDto userDto, BindingResult bindingResult,
+                               RedirectAttributes redirectAttributes) {
+        userValidator.validate(userDto, bindingResult);
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", bindingResult);
+            redirectAttributes.addFlashAttribute("user", userDto);
+            return "redirect:/registration";
         }
-        userService.registerUser(user);
-
+        try {
+            userService.registerUser(userDto);
+            redirectAttributes.addFlashAttribute(INFORMATION_MESSAGE, Messages.SUCCESSFUL_REGISTRATION);
+        } catch (EntityAlreadyExists e) {
+            redirectAttributes.addFlashAttribute(INFORMATION_MESSAGE, e.getMessage());
+            redirectAttributes.addFlashAttribute("user", userDto);
+            LOG.info("User trying to register with already used login or email", e);
+        }
         return "redirect:/login";
     }
 

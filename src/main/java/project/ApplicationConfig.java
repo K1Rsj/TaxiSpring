@@ -1,15 +1,19 @@
 package project;
 
-import com.mysql.jdbc.Driver;
-import org.apache.commons.dbcp.BasicDataSource;
+import java.util.Locale;
+import java.util.Properties;
+
 import org.hibernate.cfg.Environment;
 import org.hibernate.dialect.MySQL5Dialect;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -24,9 +28,7 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import javax.sql.DataSource;
-import java.util.Locale;
-import java.util.Properties;
+import com.mysql.jdbc.Driver;
 
 //@Configuration
 //@EnableWebMvc
@@ -34,11 +36,13 @@ import java.util.Properties;
 @SpringBootApplication
 @EnableTransactionManagement
 @EnableJpaRepositories("project.model.dao.repository")
+@EnableAspectJAutoProxy
 public class ApplicationConfig implements WebMvcConfigurer {
 
     public static void main(String[] args) {
         System.setProperty("server.port", "8015");
         System.setProperty("server.error.whitelabel.enabled", "false");
+        System.out.println(EVIL);
         SpringApplication.run(ApplicationConfig.class, args);
     }
 
@@ -88,9 +92,8 @@ public class ApplicationConfig implements WebMvcConfigurer {
         return internalResourceViewResolver;
     }
 
-    @Bean
-    public static DataSource getDataSource() {
-        BasicDataSource dataSource = new BasicDataSource();
+    private DriverManagerDataSource getDataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(Driver.class.getCanonicalName());
         dataSource.setUrl("jdbc:mysql://localhost:3306/taxi");
         dataSource.setUsername("root");
@@ -100,7 +103,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+    LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(getDataSource());
         entityManagerFactoryBean.setPackagesToScan("project");
@@ -116,6 +119,11 @@ public class ApplicationConfig implements WebMvcConfigurer {
         platformTransactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
 
         return platformTransactionManager;
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 
     private Properties jpaProps() {
